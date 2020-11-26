@@ -1,0 +1,22 @@
+.headerDiv {
+    margin-left: 30px;
+    margin-top: 100px;
+}
+
+.formDiv {
+    text-align: center;
+}
+
+.subheadingDiv {
+    text-align: center;
+}
+
+.tweets {
+    text-align: center;
+}
+
+.tweet {
+
+    display: inline-block;
+    margin: 10px;
+}
