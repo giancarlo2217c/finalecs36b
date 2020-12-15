@@ -1,22 +1,39 @@
 const tweetModel = require('../models/tweetModel')
-var Twit = require('twit');
+var Twitter = require('twitter');
+// var Twit = require('twit');
 
-var T = new Twit({
+// var T = new Twit({
+//     consumer_key: 'G89gxYq2RnULHvdw2vW1rENsx',
+//     consumer_secret: 'MiO3xFLVkiFyZFwkjc0UbkPo122JTLqK6yxowKz9GszsBvbrTn',
+//     access_token: '1091434355421982721-pz7qT3CvGhaj81DPOUdy5SCQXDM56k',
+//     access_token_secret: 'BVOp6cyKYJ33D8enffUCFQVgPkJASdRvrmcTUCk0j0kWk',
+//     timeout_ms: 60*1000,
+//     strictSSL: true,
+// })
+
+var client = new Twitter({
     consumer_key: 'G89gxYq2RnULHvdw2vW1rENsx',
-    consumer_secret: 'MiO3xFLVkiFyZFwkjc0UbkPo122JTLqK6yxowKz9GszsBvbrTn',
-    access_token: '1091434355421982721-pz7qT3CvGhaj81DPOUdy5SCQXDM56k',
-    access_token_secret: 'BVOp6cyKYJ33D8enffUCFQVgPkJASdRvrmcTUCk0j0kWk',
-    timeout_ms: 60*1000,
-    strictSSL: true,
+  consumer_secret: 'MiO3xFLVkiFyZFwkjc0UbkPo122JTLqK6yxowKz9GszsBvbrTn',
+  access_token_key: '1091434355421982721-pz7qT3CvGhaj81DPOUdy5SCQXDM56k',
+  access_token_secret: 'BVOp6cyKYJ33D8enffUCFQVgPkJASdRvrmcTUCk0j0kWk'
 })
 
 const createTweet = async (req, res) => {
 
     var tweet = req.body.tweet;
     promise = new Promise( (resolve, reject) => { 
-        T.get('search/tweets', { q: tweet, count: 100}, function(err, data, response) {
-            resolve(data.statuses); 
-        })
+        // T.get('search/tweets', { q: tweet, count: 20}, function(err, data, response) {
+        //     resolve(data.statuses); 
+        // })
+        
+        console.log(tweet[0])
+        var params = {screen_name: tweet[0]};
+        client.get('statuses/user_timeline', params, function(error, tweets, response) {
+            if(!error) {
+                console.log(tweets);
+                resolve(tweets);
+            }
+        });
     })
 
     let tweetData = await promise; //tweet data is an array of tweets; its length is specified by count at T.get
@@ -37,7 +54,7 @@ const createTweet = async (req, res) => {
         const simpleTweet = {
             _id: tweet.id,
             time: tweet.created_at, 
-            name: tweet.user.name,
+            name: tweet.user.screen_name,
             description: tweet.user.description,
             text: tweet.text
         }
